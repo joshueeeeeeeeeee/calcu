@@ -174,3 +174,86 @@ function celebrate() {
   const sun = document.querySelector(".sun");
   if (sun) spinSun(sun);
 }
+
+/* ---------- SURPRISE! button: Gumball and Darwin pop out ---------- */
+
+const BUDDY_RATIO = 0.72; // fallback width / height of the pictures
+
+function buddyRatio(img) {
+  if (img.naturalWidth && img.naturalHeight) {
+    return img.naturalWidth / img.naturalHeight;
+  }
+  return BUDDY_RATIO;
+}
+
+function setBuddy(img, x, y, height, ratio) {
+  img.style.left = x + "px";
+  img.style.top = y + "px";
+  img.style.height = height + "px";
+  img.style.width = height * ratio + "px";
+}
+
+// Works out where the two characters go, based on the calculator's size
+function placeBuddies() {
+  const calc = document.querySelector(".calculator");
+  const left = document.querySelector(".buddy-left");
+  const right = document.querySelector(".buddy-right");
+  if (!calc || !left || !right) return;
+
+  // offset* values ignore the floating animation, so positions stay steady
+  const cx = calc.offsetLeft;
+  const cy = calc.offsetTop;
+  const cw = calc.offsetWidth;
+  const ch = calc.offsetHeight;
+  const viewWidth = document.documentElement.clientWidth;
+
+  const ratioL = buddyRatio(left);
+  const ratioR = buddyRatio(right);
+  const sideRoom = Math.min(cx, viewWidth - cx - cw) - 16;
+
+  if (sideRoom >= 110) {
+    // Enough space: one character on each side of the calculator
+    document.body.classList.add("buddies-side");
+    document.body.classList.remove("buddies-peek");
+
+    const h = Math.min(ch * 0.9, sideRoom / Math.max(ratioL, ratioR), 520);
+    setBuddy(left, cx - h * ratioL - 8, cy + ch - h, h, ratioL);
+    setBuddy(right, cx + cw + 16, cy + ch - h, h, ratioR);
+  } else {
+    // Narrow screen (phones): peek over the top corners of the calculator
+    document.body.classList.add("buddies-peek");
+    document.body.classList.remove("buddies-side");
+
+    const w = Math.min(viewWidth * 0.27, 120);
+    const hL = w / ratioL;
+    const hR = w / ratioR;
+    const room = Math.max(cy - 6, 44);
+
+    setBuddy(left, cx + cw * 0.07, cy - Math.min(room, hL * 0.75), hL, ratioL);
+    setBuddy(right, cx + cw - w - cw * 0.07, cy - Math.min(room, hR * 0.75), hR, ratioR);
+  }
+}
+
+function toggleBuddies(button) {
+  const on = document.body.classList.toggle("buddies-on");
+  placeBuddies();
+  button.textContent = on ? "BYE BYE!" : "SURPRISE!";
+
+  if (on) {
+    // Confetti puff where each character appears
+    setTimeout(() => {
+      document.querySelectorAll(".buddy").forEach((img) => {
+        const x = parseFloat(img.style.left) + parseFloat(img.style.width) / 2;
+        const y = parseFloat(img.style.top) + parseFloat(img.style.height) / 2;
+        burst(x, y, 14);
+      });
+    }, 250);
+  }
+}
+
+window.addEventListener("resize", placeBuddies);
+window.addEventListener("load", placeBuddies);
+document.querySelectorAll(".buddy").forEach((img) => {
+  img.addEventListener("load", placeBuddies);
+});
+placeBuddies();
