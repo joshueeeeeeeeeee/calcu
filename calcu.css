@@ -1,0 +1,600 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+  --sky: #7fb2ff;
+  --gumball-blue: #38bfd9;
+  --pink: #ffb3ba;
+  --pink-deep: #ec4899;
+  --orange: #ff6a13;
+  --green: #2e9e44;
+  --purple: #a73a90;
+  --yellow: #ffe600;
+  --ink: #1a1026;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+/* ---------- Background scene ---------- */
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  background:
+    /* big pastel rainbow arc behind the calculator */
+    radial-gradient(
+      circle at 50% 88%,
+      transparent 0 44vmin,
+      rgba(46, 158, 68, 0.55) 44vmin 47vmin,
+      rgba(56, 191, 217, 0.55) 47vmin 50vmin,
+      rgba(167, 58, 144, 0.5) 50vmin 53vmin,
+      rgba(236, 72, 153, 0.5) 53vmin 56vmin,
+      rgba(255, 230, 0, 0.55) 56vmin 59vmin,
+      rgba(255, 106, 19, 0.55) 59vmin 62vmin,
+      rgba(91, 111, 214, 0.55) 62vmin 65vmin,
+      transparent 65vmin
+    ),
+    /* sky */
+    linear-gradient(180deg, #4f94ff 0%, var(--sky) 45%, #bfe0ff 100%);
+}
+
+/* Drifting clouds */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: -400px;
+  width: calc(100vw + 800px);
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* cloud 1 */
+    radial-gradient(circle at 14% 18%, #fff 0 34px, transparent 35px),
+    radial-gradient(circle at 17% 15%, #fff 0 42px, transparent 43px),
+    radial-gradient(circle at 20% 19%, #fff 0 32px, transparent 33px),
+    /* cloud 2 */
+    radial-gradient(circle at 55% 10%, #fff 0 28px, transparent 29px),
+    radial-gradient(circle at 58% 8%, #fff 0 36px, transparent 37px),
+    radial-gradient(circle at 61% 11%, #fff 0 26px, transparent 27px),
+    /* cloud 3 */
+    radial-gradient(circle at 80% 38%, #fff 0 30px, transparent 31px),
+    radial-gradient(circle at 83% 35%, #fff 0 38px, transparent 39px),
+    radial-gradient(circle at 86% 39%, #fff 0 28px, transparent 29px),
+    /* cloud 4 */
+    radial-gradient(circle at 34% 45%, rgba(255, 255, 255, 0.85) 0 24px, transparent 25px),
+    radial-gradient(circle at 36.5% 43%, rgba(255, 255, 255, 0.85) 0 30px, transparent 31px),
+    radial-gradient(circle at 39% 46%, rgba(255, 255, 255, 0.85) 0 22px, transparent 23px);
+  animation: clouds 45s linear infinite alternate;
+}
+
+/* Rolling grass hills */
+body::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30vh;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* front grass strip */
+    linear-gradient(to top, #2a8a3c 0 7%, transparent 7%),
+    /* front hills */
+    radial-gradient(ellipse 42% 62% at 10% 100%, #34a84f 0 99%, transparent 100%),
+    radial-gradient(ellipse 50% 80% at 85% 100%, #2e9e44 0 99%, transparent 100%),
+    /* back hill, lighter */
+    radial-gradient(ellipse 65% 55% at 48% 100%, #52c96a 0 99%, transparent 100%);
+}
+
+/* ---------- Clickable background: sun ---------- */
+
+.sun {
+  position: fixed;
+  top: 36px;
+  right: 50px;
+  width: 110px;
+  height: 110px;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: sun-glow 4s ease-in-out infinite;
+  transition: filter 0.15s ease;
+}
+
+/* Spinning rays */
+.sun::before {
+  content: "";
+  position: absolute;
+  inset: -28px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(255, 233, 77, 0.9) 0 7deg,
+    transparent 7deg 22.5deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 52%, transparent 72%);
+  mask-image: radial-gradient(circle, #000 52%, transparent 72%);
+  animation: rays 24s linear infinite;
+}
+
+/* Sun disc */
+.sun::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid var(--ink);
+  background: radial-gradient(
+    circle,
+    #fffbd0 0 30%,
+    #ffe94d 31% 62%,
+    #ffc400 63% 100%
+  );
+}
+
+.sun:hover {
+  filter: brightness(1.12);
+}
+
+.sun.spin {
+  animation:
+    sun-glow 4s ease-in-out infinite,
+    sun-spin 1s ease-in-out;
+}
+
+/* ---------- Clickable background: bubbles ---------- */
+
+.bubble {
+  position: fixed;
+  z-index: 1;
+  width: var(--s);
+  height: var(--s);
+  padding: 0;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 30% 28%,
+      rgba(255, 255, 255, 0.95) 0 10%,
+      rgba(255, 255, 255, 0) 11%
+    ),
+    var(--c);
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: bubble-float var(--t) ease-in-out var(--d) infinite;
+  transition:
+    scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease,
+    filter 0.15s ease;
+}
+
+.bubble:hover {
+  scale: 1.15;
+  filter: brightness(1.1);
+}
+
+.bubble:active {
+  scale: 0.9;
+}
+
+/* Bounce when "=" is pressed (not while a bubble is popped) */
+.bubble.cheer:not(.popped) {
+  animation:
+    bubble-float var(--t) ease-in-out var(--d) infinite,
+    cheer 0.7s ease;
+}
+
+/* Popped: disappears, then grows back when the class is removed */
+.bubble.popped {
+  scale: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    scale 0.12s ease-in,
+    opacity 0.12s ease-in;
+}
+
+.b1 { left: 6%;  top: 22%; --s: 72px; --c: var(--orange);    --t: 5s;   --d: 0s; }
+.b2 { left: 14%; top: 60%; --s: 50px; --c: var(--yellow);    --t: 4s;   --d: -1s; }
+.b3 { right: 8%; top: 46%; --s: 64px; --c: var(--pink-deep); --t: 5.5s; --d: -2s; }
+.b4 { right: 18%; top: 72%; --s: 46px; --c: var(--gumball-blue); --t: 4.5s; --d: -0.5s; }
+.b5 { left: 24%; top: 10%; --s: 40px; --c: var(--purple);    --t: 3.8s; --d: -1.5s; }
+
+/* Confetti and burst pieces made by the JavaScript */
+.burst-piece {
+  position: fixed;
+  z-index: 5;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: burst 0.7s ease-out forwards;
+}
+
+.confetti {
+  position: fixed;
+  top: -20px;
+  z-index: 5;
+  width: 10px;
+  height: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  pointer-events: none;
+  animation: fall 3s linear forwards;
+}
+
+/* ---------- Background celebration when "=" is pressed ---------- */
+
+/* Flash of light across the sky */
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 230, 0, 0.35) 45%,
+    transparent 75%
+  );
+  animation: flash 0.8s ease-out forwards;
+}
+
+/* Rainbow rings rippling out from the calculator */
+.ring {
+  position: fixed;
+  z-index: 0;
+  width: 0;
+  height: 0;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  translate: -50% -50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: ring-expand 1.2s ease-out forwards;
+}
+
+/* ---------- Calculator ---------- */
+
+.calculator {
+  position: relative;
+  z-index: 1;
+  width: 340px;
+  padding: 36px 18px 20px;
+  background: var(--sky);
+  border: 5px solid var(--ink);
+  border-radius: 24px;
+  box-shadow: 8px 8px 0 var(--ink);
+  overflow: hidden;
+  transition: transform 0.8s ease;
+  animation:
+    pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    float 4s ease-in-out 0.7s infinite;
+}
+
+/* Rainbow stripe using the GUMBALL title colors, scrolling sideways */
+.calculator::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: linear-gradient(
+    90deg,
+    var(--green) 0 14.28%,
+    var(--gumball-blue) 14.28% 28.56%,
+    var(--purple) 28.56% 42.84%,
+    var(--pink-deep) 42.84% 57.12%,
+    var(--yellow) 57.12% 71.4%,
+    var(--orange) 71.4% 85.68%,
+    #5b6fd6 85.68% 100%
+  );
+  background-size: 200px 100%;
+  background-repeat: repeat-x;
+  border-bottom: 4px solid var(--ink);
+  animation: rainbow-scroll 3s linear infinite;
+}
+
+.calculator.upside-down {
+  transform: rotate(180deg);
+}
+
+form {
+  margin: 0 0 16px;
+}
+
+input[name="textview"] {
+  width: 100%;
+  height: 70px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 22px;
+  text-align: right;
+  color: var(--ink);
+  background: #f4fbff;
+  border: 4px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: inset 4px 4px 0 rgba(56, 191, 217, 0.35);
+  outline: none;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.buttons button {
+  position: relative;
+  overflow: hidden;
+  height: 58px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--pink);
+  border: 4px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    translate 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  animation: button-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Shine that sweeps across the button on hover */
+.buttons button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+/* Buttons pop in one after another */
+.buttons button:nth-child(1)  { animation-delay: 0.30s; }
+.buttons button:nth-child(2)  { animation-delay: 0.34s; }
+.buttons button:nth-child(3)  { animation-delay: 0.38s; }
+.buttons button:nth-child(4)  { animation-delay: 0.42s; }
+.buttons button:nth-child(5)  { animation-delay: 0.46s; }
+.buttons button:nth-child(6)  { animation-delay: 0.50s; }
+.buttons button:nth-child(7)  { animation-delay: 0.54s; }
+.buttons button:nth-child(8)  { animation-delay: 0.58s; }
+.buttons button:nth-child(9)  { animation-delay: 0.62s; }
+.buttons button:nth-child(10) { animation-delay: 0.66s; }
+.buttons button:nth-child(11) { animation-delay: 0.70s; }
+.buttons button:nth-child(12) { animation-delay: 0.74s; }
+.buttons button:nth-child(13) { animation-delay: 0.78s; }
+.buttons button:nth-child(14) { animation-delay: 0.82s; }
+.buttons button:nth-child(15) { animation-delay: 0.86s; }
+.buttons button:nth-child(16) { animation-delay: 0.90s; }
+.buttons button:nth-child(17) { animation-delay: 0.94s; }
+
+.buttons button:hover {
+  translate: 0 -4px;
+  box-shadow: 4px 8px 0 var(--ink);
+  filter: brightness(1.08) saturate(1.1);
+}
+
+.buttons button:hover::after {
+  left: 130%;
+}
+
+.buttons button:active {
+  translate: 4px 4px;
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* Operators: Gumball blue */
+.btn-op {
+  background: var(--gumball-blue) !important;
+}
+
+/* Clear: Darwin orange */
+.btn-clear {
+  background: var(--orange) !important;
+  color: var(--white) !important;
+}
+
+/* Backspace: yellow from the logo */
+.btn-func {
+  background: var(--yellow) !important;
+}
+
+/* Equals: green, spans two rows, gently pulsing */
+.btn-equal {
+  grid-row: span 2;
+  height: auto !important;
+  background: var(--green) !important;
+  color: var(--white) !important;
+  font-size: 22px !important;
+  animation:
+    button-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.74s both,
+    pulse 1.8s ease-in-out 1.4s infinite !important;
+}
+
+/* Zero: wide button */
+.btn-zero {
+  grid-column: span 2;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes pop-in {
+  from {
+    scale: 0.6;
+    translate: 0 60px;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -8px; }
+}
+
+@keyframes rainbow-scroll {
+  from { background-position-x: 0; }
+  to   { background-position-x: 200px; }
+}
+
+@keyframes clouds {
+  from { translate: 0 0; }
+  to   { translate: 300px 0; }
+}
+
+@keyframes sun-glow {
+  0%, 100% { scale: 1;    opacity: 0.92; }
+  50%      { scale: 1.1;  opacity: 1; }
+}
+
+@keyframes rays {
+  to { rotate: 360deg; }
+}
+
+@keyframes sun-spin {
+  from { rotate: 0deg; }
+  to   { rotate: 720deg; }
+}
+
+@keyframes bubble-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 10px -22px; }
+}
+
+@keyframes cheer {
+  0%   { scale: 1; }
+  40%  { scale: 1.35; }
+  70%  { scale: 0.9; }
+  100% { scale: 1; }
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes ring-expand {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0.9;
+  }
+  to {
+    width: 160vmax;
+    height: 160vmax;
+    opacity: 0;
+  }
+}
+
+@keyframes burst {
+  from {
+    translate: 0 0;
+    scale: 1;
+    opacity: 1;
+  }
+  to {
+    translate: var(--dx) var(--dy);
+    scale: 0.2;
+    opacity: 0;
+  }
+}
+
+@keyframes fall {
+  from {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  to {
+    translate: var(--drift) 110vh;
+    rotate: 720deg;
+    opacity: 1;
+  }
+}
+
+@keyframes button-in {
+  from {
+    scale: 0;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { scale: 1; }
+  50%      { scale: 1.05; }
+}
+
+@media (max-width: 380px) {
+  .calculator {
+    width: 94vw;
+  }
+
+  .buttons button {
+    height: 52px;
+    font-size: 14px;
+  }
+
+  .sun {
+    width: 70px;
+    height: 70px;
+    top: 28px;
+    right: 28px;
+  }
+}
+
+/* Turn off motion for people who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .burst-piece,
+  .confetti,
+  .flash,
+  .ring {
+    display: none;
+  }
+}
