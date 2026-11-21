@@ -17,6 +17,10 @@
       <button type="button" class="bubble b5" title="Pop me!" aria-label="Bubble" onclick="popBubble(this)"></button>
     </div>
 
+    <!-- Characters that pop out when the SURPRISE! button is clicked -->
+    <img class="buddy buddy-left" src="gumball-sticker.png" alt="Gumball" draggable="false" />
+    <img class="buddy buddy-right" src="darwin-sticker.png" alt="Darwin" draggable="false" />
+
     <div class="calculator">
       <form name="form1">
         <input type="text" name="textview" readonly />
@@ -51,6 +55,8 @@
         <button type="button" class="btn-zero" onclick="insert('0')">0</button>
         <button type="button" onclick="insert('.')">.</button>
       </section>
+
+      <button type="button" class="btn-surprise" onclick="toggleBuddies(this)">SURPRISE!</button>
     </div>
 
 
