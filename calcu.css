@@ -267,6 +267,57 @@ body::after {
   animation: ring-expand 1.2s ease-out forwards;
 }
 
+/* ---------- Gumball and Darwin (SURPRISE! button) ---------- */
+
+/* Hidden by default: tucked behind the calculator */
+.buddy {
+  position: fixed;
+  z-index: 1;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  opacity: 0;
+  visibility: hidden;
+  scale: 0.2;
+  translate: var(--hide-x, 0%) var(--hide-y, 0%);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(4px 4px 0 var(--ink));
+  transition:
+    opacity 0.25s ease,
+    scale 0.35s ease-in,
+    translate 0.35s ease-in,
+    visibility 0s linear 0.35s;
+}
+
+/* Wide screens: slide out sideways from behind the calculator */
+body.buddies-side .buddy-left  { --hide-x: 85%; }
+body.buddies-side .buddy-right { --hide-x: -85%; }
+
+/* Phones: rise up from behind the calculator */
+body.buddies-peek .buddy { --hide-y: 45%; }
+
+.buddy-right { --delay: 0.12s; }
+
+/* Visible: pop out with a bounce, then sway gently */
+body.buddies-on .buddy {
+  opacity: 1;
+  visibility: visible;
+  scale: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.25s ease var(--delay, 0s),
+    scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s),
+    translate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s),
+    visibility 0s linear 0s;
+  animation: buddy-bob 2.6s ease-in-out 0.8s infinite;
+}
+
+body.buddies-on .buddy-right {
+  animation-delay: 1.1s;
+}
+
 /* ---------- Calculator ---------- */
 
 .calculator {
@@ -339,7 +390,8 @@ input[name="textview"] {
   gap: 10px;
 }
 
-.buttons button {
+.buttons button,
+.btn-surprise {
   position: relative;
   overflow: hidden;
   height: 58px;
@@ -363,7 +415,8 @@ input[name="textview"] {
 }
 
 /* Shine that sweeps across the button */
-.buttons button::after {
+.buttons button::after,
+.btn-surprise::after {
   content: "";
   position: absolute;
   top: 0;
@@ -402,13 +455,15 @@ input[name="textview"] {
 
 /* Hover effects only on devices with a mouse (no sticky hover on phones) */
 @media (hover: hover) {
-  .buttons button:hover {
+  .buttons button:hover,
+  .btn-surprise:hover {
     translate: 0 -4px;
     box-shadow: 4px 8px 0 var(--ink);
     filter: brightness(1.08) saturate(1.1);
   }
 
-  .buttons button:hover::after {
+  .buttons button:hover::after,
+  .btn-surprise:hover::after {
     left: 130%;
   }
 
@@ -423,12 +478,14 @@ input[name="textview"] {
 }
 
 /* Press effect (works for both mouse and touch) */
-.buttons button:active {
+.buttons button:active,
+.btn-surprise:active {
   translate: 4px 4px;
   box-shadow: 0 0 0 var(--ink);
 }
 
-.buttons button:active::after {
+.buttons button:active::after,
+.btn-surprise:active::after {
   left: 130%;
 }
 
@@ -463,6 +520,18 @@ input[name="textview"] {
 /* Zero: wide button */
 .btn-zero {
   grid-column: span 2;
+}
+
+/* SURPRISE! button: full width, below the number pad */
+.btn-surprise {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--white);
+  background: var(--purple);
+  animation-delay: 0.98s;
 }
 
 /* ---------- Keyframes ---------- */
@@ -519,6 +588,12 @@ input[name="textview"] {
   40%  { scale: 1.35; }
   70%  { scale: 0.9; }
   100% { scale: 1; }
+}
+
+@keyframes buddy-bob {
+  0%, 100% { rotate: 0deg; }
+  25%      { rotate: -4deg; }
+  75%      { rotate: 4deg; }
 }
 
 @keyframes flash {
@@ -591,8 +666,8 @@ input[name="textview"] {
   }
 
   input[name="textview"] {
-    height: clamp(64px, 10vh, 84px);
-    height: clamp(64px, 10dvh, 84px);
+    height: clamp(60px, 9vh, 80px);
+    height: clamp(60px, 9dvh, 80px);
     font-size: 20px;
   }
 
@@ -601,13 +676,19 @@ input[name="textview"] {
   }
 
   .buttons button {
-    height: clamp(54px, 9.5vh, 76px);
-    height: clamp(54px, 9.5dvh, 76px);
+    height: clamp(50px, 8.6vh, 72px);
+    height: clamp(50px, 8.6dvh, 72px);
     font-size: clamp(16px, 4.8vw, 22px);
   }
 
   .btn-equal {
     font-size: clamp(20px, 5.5vw, 28px) !important;
+  }
+
+  .btn-surprise {
+    height: clamp(46px, 7vh, 60px);
+    height: clamp(46px, 7dvh, 60px);
+    font-size: clamp(13px, 3.8vw, 18px);
   }
 
   /* Sun smaller, tucked into the top corner */
@@ -654,7 +735,7 @@ input[name="textview"] {
   }
 
   input[name="textview"] {
-    height: 46px;
+    height: 40px;
     font-size: 16px;
     border-width: 3px;
   }
@@ -664,7 +745,7 @@ input[name="textview"] {
   }
 
   .buttons button {
-    height: 38px;
+    height: 34px;
     font-size: 13px;
     border-width: 3px;
     border-radius: 10px;
@@ -673,6 +754,15 @@ input[name="textview"] {
 
   .btn-equal {
     font-size: 16px !important;
+  }
+
+  .btn-surprise {
+    height: 32px;
+    margin-top: 8px;
+    font-size: 11px;
+    border-width: 3px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--ink);
   }
 
   .sun {
